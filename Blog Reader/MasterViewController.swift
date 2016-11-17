@@ -8,6 +8,8 @@
 
 import UIKit
 import CoreData
+import Alamofire
+import SwiftyJSON
 
 class MasterViewController: UITableViewController, NSFetchedResultsControllerDelegate {
 
@@ -17,14 +19,22 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-        self.navigationItem.leftBarButtonItem = self.editButtonItem
-
-        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(insertNewObject(_:)))
-        self.navigationItem.rightBarButtonItem = addButton
-        if let split = self.splitViewController {
-            let controllers = split.viewControllers
-            self.detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
+        Alamofire.request("https://www.googleapis.com/blogger/v3/blogs/10861780/posts?key=AIzaSyD3wpHGuqUzkEd7ZdmWnP-yqP5RPy0rDCI").responseData { (resData) -> Void in
+            if((resData.result.value) != nil) {
+                let swiftyJsonVar = JSON(data : resData.result.value!)
+                //                    resData.result.value!
+                print(swiftyJsonVar)
+//                print(swiftyJsonVar["items"][0]["published"])
+//                if let items = swiftyJsonVar["items"].arrayObject {
+//                    for item in items {
+//                        
+//                        
+//                        print(item["published"])
+////                        print(item["title"])
+////                        print(item["content"])
+//                    }
+//                }
+            }
         }
     }
 
