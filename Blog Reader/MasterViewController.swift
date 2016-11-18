@@ -24,16 +24,32 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
                 let swiftyJsonVar = JSON(data : resData.result.value!)
                 //                    resData.result.value!
                 print(swiftyJsonVar)
-//                print(swiftyJsonVar["items"][0]["published"])
-//                if let items = swiftyJsonVar["items"].arrayObject {
-//                    for item in items {
-//                        
-//                        
-//                        print(item["published"])
-////                        print(item["title"])
-////                        print(item["content"])
-//                    }
-//                }
+                
+                //Below: Replaced key with _
+                for (_, item) in swiftyJsonVar["items"] {
+                    let title = item["title"].string
+                    let published = item["published"].string
+                    let content = item["content"].string
+                    
+                    let context = self.fetchedResultsController.managedObjectContext
+                    let newEvent = Event(context: context)
+                    
+                    // If appropriate, configure the new managed object.
+                    newEvent.timestamp = NSDate()
+                    newEvent.title = title
+                    newEvent.published = published
+                    newEvent.content = content
+                    // Save the context.
+                    do {
+                        try context.save()
+                    } catch {
+                        // Replace this implementation with code to handle the error appropriately.
+                        // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                        let nserror = error as NSError
+                        fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+                    }
+                    
+                }
             }
         }
     }
